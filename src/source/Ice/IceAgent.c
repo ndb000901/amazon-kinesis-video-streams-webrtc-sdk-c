@@ -583,10 +583,8 @@ STATUS iceAgentStartGathering(PIceAgent pIceAgent)
     CHK(!ATOMIC_LOAD_BOOL(&pIceAgent->agentStartGathering), retStatus);
 
     ATOMIC_STORE_BOOL(&pIceAgent->agentStartGathering, TRUE);
-
     CHK_STATUS(getLocalhostIpAddresses(pIceAgent->localNetworkInterfaces, &pIceAgent->localNetworkInterfaceCount,
-                                       pIceAgent->kvsRtcConfiguration.iceSetInterfaceFilterFunc, pIceAgent->kvsRtcConfiguration.filterCustomData));
-
+                                       pIceAgent->kvsRtcConfiguration.iceSetInterfaceFilterFunc, pIceAgent->kvsRtcConfiguration.disableIpv6, pIceAgent->kvsRtcConfiguration.filterCustomData));
     // skip gathering host candidate and srflx candidate if relay only
     if (pIceAgent->iceTransportPolicy != ICE_TRANSPORT_POLICY_RELAY) {
         CHK_STATUS(iceAgentInitHostCandidate(pIceAgent));

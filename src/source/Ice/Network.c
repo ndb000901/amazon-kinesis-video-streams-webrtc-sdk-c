@@ -4,7 +4,7 @@
 #define LOG_CLASS "Network"
 #include "../Include_i.h"
 
-STATUS getLocalhostIpAddresses(PKvsIpAddress destIpList, PUINT32 pDestIpListLen, IceSetInterfaceFilterFunc filter, UINT64 customData)
+STATUS getLocalhostIpAddresses(PKvsIpAddress destIpList, PUINT32 pDestIpListLen, IceSetInterfaceFilterFunc filter, BOOL disableIpv6, UINT64 customData)
 {
     ENTERS();
     STATUS retStatus = STATUS_SUCCESS;
@@ -60,7 +60,7 @@ STATUS getLocalhostIpAddresses(PKvsIpAddress destIpList, PUINT32 pDestIpListLen,
 
                     pIpv4Addr = (struct sockaddr_in*) (ua->Address.lpSockaddr);
                     MEMCPY(destIpList[ipCount].address, &pIpv4Addr->sin_addr, IPV4_ADDRESS_LENGTH);
-                } else {
+                } else if(!disableIpv6) {
                     destIpList[ipCount].family = KVS_IP_FAMILY_TYPE_IPV6;
                     destIpList[ipCount].port = 0;
 
@@ -106,7 +106,7 @@ STATUS getLocalhostIpAddresses(PKvsIpAddress destIpList, PUINT32 pDestIpListLen,
                     pIpv4Addr = (struct sockaddr_in*) ifa->ifa_addr;
                     MEMCPY(destIpList[ipCount].address, &pIpv4Addr->sin_addr, IPV4_ADDRESS_LENGTH);
 
-                } else {
+                } else if(!disableIpv6) {
                     destIpList[ipCount].family = KVS_IP_FAMILY_TYPE_IPV6;
                     destIpList[ipCount].port = 0;
                     pIpv6Addr = (struct sockaddr_in6*) ifa->ifa_addr;
